@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Left ribbon wing -->
+    <path
+        android:fillColor="#0065A9"
+        android:pathData="M28,39 L34,35 L66,64 L66,75 L34,47 Z" />
+    <!-- Bottom-left to top-right ribbon -->
+    <path
+        android:fillColor="#007ACC"
+        android:pathData="M28,69 L34,73 L66,44 L66,33 L34,61 Z" />
+    <!-- Right vertical bar -->
+    <path
+        android:fillColor="#1F9CF0"
+        android:pathData="M66,26 L78,32 L78,76 L66,82 Z" />
+</vector>
