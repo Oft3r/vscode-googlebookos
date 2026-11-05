@@ -180,7 +180,9 @@ When running VS Code via `code` in the terminal, the **Google Antigravity** (`go
 1. **`agy-web-proxy.service` (`scripts/agy_web_proxy.js`):**
    A lightweight Node.js proxy listening on `0.0.0.0:45414` that reads the active ephemeral port from `/tmp/agy_hub_port.txt`, forwards HTTP requests and WebSocket upgrades to `127.0.0.1:<port>`, rewrites `Host` and `Origin` headers so the hub accepts the connection, and strips `content-security-policy` and `x-frame-options` headers.
 2. **Extension Patch (`scripts/patch-antigravity-extension.py`):**
-   Copies the extension to `~/.vscode-server/extensions/` and patches `extension.js` so it records its dynamically allocated port to `/tmp/agy_hub_port.txt` and points the iframe `effectiveUrl` to `http://localhost:45414`.
+   Patches `extension.js` of every installed Antigravity version (both the readable `<= 1.10.x` build and the minified `>= 1.11.x` build) so it records its dynamically allocated port to `/tmp/agy_hub_port.txt` and points the webview `effectiveUrl` to `http://localhost:45414`.
+3. **Auto Re-Patch on Extension Updates (`agy-extension-patch.path`):**
+   Extension updates install a fresh, unpatched copy (e.g. `google.google-antigravity-1.11.0`), which brings back the original CSP error. A systemd `.path` unit watches `~/.vscode-server/extensions` and `~/.vscode/extensions` and runs the patcher automatically whenever they change. After an update, simply reload the VS Code window.
 
 ---
 

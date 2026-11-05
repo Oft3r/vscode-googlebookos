@@ -90,10 +90,39 @@ RestartSec=2
 WantedBy=multi-user.target
 EOF
 
-python3 "$SCRIPT_DIR/patch-antigravity-extension.py" || true
+sudo install -m 755 "$SCRIPT_DIR/patch-antigravity-extension.py" /usr/local/bin/patch-antigravity-extension.py
+python3 /usr/local/bin/patch-antigravity-extension.py || true
+
+# Automatically re-apply the patch whenever the Antigravity extension updates
+sudo tee /etc/systemd/system/agy-extension-patch.service >/dev/null << EOF
+[Unit]
+Description=Re-patch Google Antigravity extension for VS Code Web
+
+[Service]
+Type=oneshot
+User=$USER
+ExecStartPre=/bin/sleep 3
+ExecStart=/usr/bin/python3 /usr/local/bin/patch-antigravity-extension.py
+EOF
+
+sudo tee /etc/systemd/system/agy-extension-patch.path >/dev/null << EOF
+[Unit]
+Description=Watch VS Code extension folders for Antigravity updates
+
+[Path]
+PathChanged=$HOME/.vscode-server/extensions
+PathChanged=$HOME/.vscode/extensions
+Unit=agy-extension-patch.service
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+mkdir -p "$HOME/.vscode-server/extensions" "$HOME/.vscode/extensions"
 
 sudo systemctl daemon-reload
 sudo systemctl enable --now vscode-web.service
 sudo systemctl enable --now agy-web-proxy.service
+sudo systemctl enable --now agy-extension-patch.path
 
 echo "=== Setup completed successfully! ==="
